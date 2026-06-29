@@ -79,6 +79,14 @@ app.post('/api/signup', async (req, res) => {
   return res.status(200).json({ ok: true, message: '確認メールを送信しました。メールをご確認ください。' })
 })
 
+app.get('/api/health', (req, res) => {
+  res.json({
+    hasGmailUser: Boolean(GMAIL_USER),
+    hasGmailAppPassword: Boolean(GMAIL_APP_PASSWORD),
+    commit: process.env.RENDER_GIT_COMMIT || null,
+  })
+})
+
 app.get('/api/verify', (req, res) => {
   const { token } = req.query
 
