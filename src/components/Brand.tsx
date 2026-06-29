@@ -69,7 +69,7 @@ export function HopText({ text, className = '' }: { text: string; className?: st
     <span className={`hop-text ${className}`}>
       {text.split('').map((char, i) => (
         <span key={i} className="hop-char" style={{ animationDelay: `${i * 0.08}s` }}>
-          {char === ' ' ? ' ' : char}
+          {char === ' ' ? ' ' : char}
         </span>
       ))}
     </span>
