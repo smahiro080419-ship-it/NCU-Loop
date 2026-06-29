@@ -46,7 +46,7 @@ app.post('/api/signup', async (req, res) => {
   }
 
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
       subject: 'NCU Loop 登録の確認',
@@ -63,6 +63,11 @@ app.post('/api/signup', async (req, res) => {
         </div>
       `,
     })
+
+    if (error) {
+      console.error('Resend rejected the email', error)
+      return res.status(502).json({ ok: false, message: 'メールの送信に失敗しました。しばらくしてから再度お試しください。' })
+    }
   } catch (err) {
     console.error('Failed to send signup email', err)
     return res.status(502).json({ ok: false, message: 'メールの送信に失敗しました。しばらくしてから再度お試しください。' })
