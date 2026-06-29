@@ -85,6 +85,18 @@ app.post('/api/signup', async (req, res) => {
   return res.status(200).json({ ok: true, message: '確認メールを送信しました。メールをご確認ください。' })
 })
 
+app.get('/api/debug-smtp', async (req, res) => {
+  if (!transporter) {
+    return res.json({ ok: false, reason: 'no-transporter' })
+  }
+  try {
+    await transporter.verify()
+    res.json({ ok: true })
+  } catch (err) {
+    res.json({ ok: false, code: err.code, message: err.message, command: err.command })
+  }
+})
+
 app.get('/api/health', (req, res) => {
   res.json({
     hasGmailUser: Boolean(GMAIL_USER),
