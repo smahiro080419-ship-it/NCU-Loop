@@ -2,16 +2,24 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import crypto from 'crypto'
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 
 const PORT = process.env.PORT || 4000
 const APP_URL = process.env.APP_URL || 'http://localhost:5173'
-const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev'
+const GMAIL_USER = process.env.GMAIL_USER
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD
 const REQUIRED_DOMAIN = '@ed.nagoya-cu.ac.jp'
 const INVALID_DOMAIN_MESSAGE =
   '申し訳ございません。このアプリは名古屋市立大学発行のメールアドレスでなければログインできません。もう一度メールアドレスをお確かめになるか、別のアドレスを入力してください。'
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+const transporter =
+  GMAIL_USER && GMAIL_APP_PASSWORD
+    ? nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD },
+      })
+    : null
+
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173')
   .split(',')
   .map((origin) => origin.trim())
@@ -40,14 +48,14 @@ app.post('/api/signup', async (req, res) => {
   const continueUrl = `${APP_URL}/#/verify?token=${token}`
   console.log(`[dev] verification link for ${email}: ${continueUrl}`)
 
-  if (!resend) {
-    console.error('RESEND_API_KEY is not set — cannot send email')
+  if (!transporter) {
+    console.error('GMAIL_USER / GMAIL_APP_PASSWORD is not set — cannot send email')
     return res.status(500).json({ ok: false, message: 'メール送信が設定されていません。サーバー管理者にお問い合わせください。' })
   }
 
   try {
-    const { error } = await resend.emails.send({
-      from: FROM_EMAIL,
+    await transporter.sendMail({
+      from: `NCU Loop <${GMAIL_USER}>`,
       to: email,
       subject: 'NCU Loop 登録の確認',
       html: `
@@ -63,11 +71,6 @@ app.post('/api/signup', async (req, res) => {
         </div>
       `,
     })
-
-    if (error) {
-      console.error('Resend rejected the email', error)
-      return res.status(502).json({ ok: false, message: 'メールの送信に失敗しました。しばらくしてから再度お試しください。' })
-    }
   } catch (err) {
     console.error('Failed to send signup email', err)
     return res.status(502).json({ ok: false, message: 'メールの送信に失敗しました。しばらくしてから再度お試しください。' })

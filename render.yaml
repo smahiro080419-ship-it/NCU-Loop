@@ -7,10 +7,10 @@ services:
     buildCommand: npm install
     startCommand: node index.js
     envVars:
-      - key: RESEND_API_KEY
+      - key: GMAIL_USER
         sync: false
-      - key: FROM_EMAIL
-        value: onboarding@resend.dev
+      - key: GMAIL_APP_PASSWORD
+        sync: false
       - key: APP_URL
         value: https://smahiro080419-ship-it.github.io/NCU-Loop
       - key: ALLOWED_ORIGINS
