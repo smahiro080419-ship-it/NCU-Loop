@@ -278,54 +278,165 @@
 }
 
 .market-header {
-  background: #fff;
-  border-bottom: 1px solid #e8ecf0;
-  padding: 0 20px;
+  background: linear-gradient(90deg, #4caf50 0%, #2f6fc4 100%);
+  padding: 0 16px;
   height: 56px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
+.market-back-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.market-back-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.market-header-logo {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  filter: brightness(0) invert(1);
+}
+
 .market-header-title {
   font-size: 18px;
   font-weight: 800;
-  color: #16284a;
+  color: #fff;
   flex: 1;
 }
 
 .user-icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4caf50 0%, #2f6fc4 100%);
+  background: rgba(255, 255, 255, 0.9);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.user-icon-btn:hover {
+  background: #fff;
 }
 
 .user-icon-initials {
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #4caf50 0%, #2f6fc4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   letter-spacing: 0.03em;
+}
+
+.campus-scroll-wrap {
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  overflow: hidden;
+}
+
+.campus-scroll {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.campus-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.campus-chip {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid #d8dee6;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.campus-chip-active {
+  background: linear-gradient(90deg, #4caf50 0%, #2f6fc4 100%);
+  border-color: transparent;
+  color: #fff;
+}
+
+.category-scroll-wrap {
+  background: #f4f6f8;
+  overflow: hidden;
+}
+
+.category-scroll {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.category-chip {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1.5px solid #d8dee6;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.category-chip-active {
+  background: #16284a;
+  border-color: transparent;
+  color: #fff;
 }
 
 .market-main {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
+  padding: 16px;
 }
 
 .market-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
   text-align: center;
 }
 
@@ -335,15 +446,81 @@
 }
 
 .market-empty-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #16284a;
   margin: 0 0 8px;
 }
 
 .market-empty-sub {
-  font-size: 14px;
+  font-size: 13px;
   color: #888;
+  margin: 0;
+}
+
+.book-grid-wrap {
+  width: 100%;
+}
+
+.book-grid-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  margin: 0 0 12px;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.book-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.book-card-cover {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+.book-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #16284a;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.book-card-meta {
+  font-size: 11px;
+  color: #888;
+  margin: 0;
+}
+
+.book-card-campus {
+  font-size: 11px;
+  color: #2f6fc4;
+  font-weight: 600;
+  margin: 0;
+}
+
+.book-card-price {
+  font-size: 15px;
+  font-weight: 800;
+  color: #2f9e54;
+  margin: 4px 0 0;
+}
+
+.book-card-seller {
+  font-size: 11px;
+  color: #aaa;
   margin: 0;
 }
 
