@@ -5,6 +5,7 @@ import SignUp from './pages/SignUp'
 import Verify from './pages/Verify'
 import Login from './pages/Login'
 import Market from './pages/Market'
+import Listing from './pages/Listing'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/verify" element={<Verify />} />
       <Route path="/login" element={<Login />} />
       <Route path="/market" element={<Market />} />
+      <Route path="/listing" element={<Listing />} />
     </Routes>
   )
 }

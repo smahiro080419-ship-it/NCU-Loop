@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LogoMark } from '../components/Brand'
+import { getListings, type Listing } from '../lib/listings'
 
 type Profile = {
   email: string
@@ -29,6 +30,7 @@ function Market() {
   const [profileOpen, setProfileOpen] = useState(false)
   const [activeCampus, setActiveCampus] = useState('すべて')
   const [activeCategory, setActiveCategory] = useState('すべて')
+  const [userListings, setUserListings] = useState<Listing[]>([])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -39,6 +41,7 @@ function Market() {
     }
     const raw = localStorage.getItem('ncu_profile')
     if (raw) setProfile(JSON.parse(raw))
+    setUserListings(getListings())
   }, [navigate])
 
   const handleLogout = () => {
@@ -51,11 +54,15 @@ function Market() {
 
   const initials = profile.username.slice(0, 2).toUpperCase()
 
-  const filtered = SAMPLE_BOOKS.filter((b) => {
+  const filteredUser = userListings.filter((b) =>
+    activeCampus === 'すべて' || b.campus === activeCampus
+  )
+  const filteredSample = SAMPLE_BOOKS.filter((b) => {
     const campusMatch = activeCampus === 'すべて' || b.campus === activeCampus
     const categoryMatch = activeCategory === 'すべて' || b.faculty === activeCategory
     return campusMatch && categoryMatch
   })
+  const totalCount = filteredUser.length + filteredSample.length
 
   return (
     <div className="market-layout">
@@ -105,7 +112,7 @@ function Market() {
       </div>
 
       <main className="market-main">
-        {filtered.length === 0 ? (
+        {totalCount === 0 ? (
           <div className="market-empty">
             <p className="market-empty-icon">📚</p>
             <p className="market-empty-title">出品がありません</p>
@@ -113,9 +120,21 @@ function Market() {
           </div>
         ) : (
           <div className="book-grid-wrap">
-            <p className="book-grid-label">出品中の教科書（{filtered.length}件）</p>
+            <p className="book-grid-label">出品中の教科書（{totalCount}件）</p>
             <div className="book-grid">
-              {filtered.map((book) => (
+              {filteredUser.map((book) => (
+                <div key={book.id} className="book-card">
+                  {book.photoUrl
+                    ? <img src={book.photoUrl} alt={book.title} className="book-card-photo" />
+                    : <div className="book-card-cover">📖</div>
+                  }
+                  <p className="book-card-title">{book.title}</p>
+                  <p className="book-card-meta">{book.condition} · {book.campus}</p>
+                  <p className="book-card-price">¥{book.price.toLocaleString()}</p>
+                  <p className="book-card-seller">{book.seller}</p>
+                </div>
+              ))}
+              {filteredSample.map((book) => (
                 <div key={book.id} className="book-card">
                   <div className="book-card-cover">📖</div>
                   <p className="book-card-title">{book.title}</p>
@@ -129,6 +148,10 @@ function Market() {
           </div>
         )}
       </main>
+
+      <button className="fab" onClick={() => navigate('/listing')} aria-label="出品する">
+        ＋
+      </button>
 
       {profileOpen && (
         <div className="profile-overlay" onClick={() => setProfileOpen(false)}>
