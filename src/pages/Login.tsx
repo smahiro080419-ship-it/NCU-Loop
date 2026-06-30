@@ -23,7 +23,13 @@ function Login() {
       const data = await res.json()
       if (res.ok) {
         localStorage.setItem('ncu_token', data.token)
-        localStorage.setItem('ncu_email', data.email)
+        localStorage.setItem('ncu_profile', JSON.stringify({
+          email: data.email,
+          username: data.username,
+          gender: data.gender,
+          faculty: data.faculty,
+          grade: data.grade,
+        }))
         navigate('/market')
       } else {
         setError(data.message)

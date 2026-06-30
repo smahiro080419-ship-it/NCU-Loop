@@ -47,18 +47,18 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173')
   .map((origin) => origin.trim())
 
 // In-memory stores — data is lost on server restart (demo only).
-const pendingSignups = new Map() // token -> { email, passwordHash, createdAt }
-const users = new Map() // email -> { passwordHash }
+const pendingSignups = new Map() // token -> { email, passwordHash, username, gender, faculty, grade, createdAt }
+const users = new Map() // email -> { passwordHash, username, gender, faculty, grade }
 
 const app = express()
 app.use(cors({ origin: ALLOWED_ORIGINS }))
 app.use(express.json())
 
 app.post('/api/signup', async (req, res) => {
-  const { email, password } = req.body || {}
+  const { email, password, username, gender, faculty, grade } = req.body || {}
 
-  if (!email || !password) {
-    return res.status(400).json({ ok: false, message: 'メールアドレスとパスワードを入力してください。' })
+  if (!email || !password || !username || !gender || !faculty || !grade) {
+    return res.status(400).json({ ok: false, message: 'すべての項目を入力してください。' })
   }
 
   if (!email.includes(REQUIRED_DOMAIN)) {
@@ -67,7 +67,7 @@ app.post('/api/signup', async (req, res) => {
 
   const token = crypto.randomBytes(24).toString('hex')
   const passwordHash = crypto.createHash('sha256').update(password).digest('hex')
-  pendingSignups.set(token, { email, passwordHash, createdAt: Date.now() })
+  pendingSignups.set(token, { email, passwordHash, username, gender, faculty, grade, createdAt: Date.now() })
 
   const continueUrl = `${APP_URL}/#/verify?token=${token}`
   console.log(`[dev] verification link for ${email}: ${continueUrl}`)
@@ -125,7 +125,8 @@ app.post('/api/login', (req, res) => {
   }
 
   const sessionToken = crypto.randomBytes(24).toString('hex')
-  return res.status(200).json({ ok: true, token: sessionToken, email })
+  const { passwordHash: _omit, ...profile } = user
+  return res.status(200).json({ ok: true, token: sessionToken, email, ...profile })
 })
 
 app.get('/api/health', (req, res) => {
@@ -142,9 +143,9 @@ app.get('/api/verify', (req, res) => {
     return res.status(400).json({ ok: false, message: 'リンクが無効、または期限切れです。' })
   }
 
-  const { email, passwordHash } = pendingSignups.get(token)
+  const { email, passwordHash, username, gender, faculty, grade } = pendingSignups.get(token)
   pendingSignups.delete(token)
-  users.set(email, { passwordHash })
+  users.set(email, { passwordHash, username, gender, faculty, grade })
 
   return res.status(200).json({ ok: true, email })
 })

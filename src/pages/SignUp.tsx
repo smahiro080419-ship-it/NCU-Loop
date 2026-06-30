@@ -3,11 +3,19 @@ import { Link } from 'react-router-dom'
 import { LogoMark } from '../components/Brand'
 import { API_BASE } from '../lib/api'
 
+const FACULTIES = ['医学部', '経済学部', '総合生命理学部', '芸術工学部', '人文社会学部', 'データサイエンス学部']
+const GRADES = ['1年', '2年', '3年', '4年', '院1年', '院2年']
+const GENDERS = ['男性', '女性', 'その他', '回答しない']
+
 type Screen = 'form' | 'error' | 'sent'
 
 function SignUp() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [gender, setGender] = useState('')
+  const [faculty, setFaculty] = useState('')
+  const [grade, setGrade] = useState('')
   const [screen, setScreen] = useState<Screen>('form')
   const [message, setMessage] = useState('')
   const [continueUrl, setContinueUrl] = useState('')
@@ -20,7 +28,7 @@ function SignUp() {
       const res = await fetch(`${API_BASE}/api/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, username, gender, faculty, grade }),
       })
       const data = await res.json()
       setMessage(data.message)
@@ -48,6 +56,17 @@ function SignUp() {
 
             <form className="signup-form" onSubmit={handleSubmit}>
               <label className="field">
+                <span>ユーザーネーム</span>
+                <input
+                  type="text"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="表示名"
+                />
+              </label>
+
+              <label className="field">
                 <span>メールアドレス</span>
                 <input
                   type="email"
@@ -57,6 +76,7 @@ function SignUp() {
                   placeholder="example@ed.nagoya-cu.ac.jp"
                 />
               </label>
+
               <label className="field">
                 <span>パスワード</span>
                 <input
@@ -67,6 +87,36 @@ function SignUp() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="8文字以上"
                 />
+              </label>
+
+              <label className="field">
+                <span>性別</span>
+                <select required value={gender} onChange={(e) => setGender(e.target.value)}>
+                  <option value="">選択してください</option>
+                  {GENDERS.map((g) => (
+                    <option key={g} value={g}>{g}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="field">
+                <span>学部</span>
+                <select required value={faculty} onChange={(e) => setFaculty(e.target.value)}>
+                  <option value="">選択してください</option>
+                  {FACULTIES.map((f) => (
+                    <option key={f} value={f}>{f}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="field">
+                <span>学年</span>
+                <select required value={grade} onChange={(e) => setGrade(e.target.value)}>
+                  <option value="">選択してください</option>
+                  {GRADES.map((g) => (
+                    <option key={g} value={g}>{g}</option>
+                  ))}
+                </select>
               </label>
 
               <div className="actions">
