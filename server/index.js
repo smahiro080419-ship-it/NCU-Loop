@@ -2,29 +2,45 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import crypto from 'crypto'
-import nodemailer from 'nodemailer'
+import { google } from 'googleapis'
 
 const PORT = process.env.PORT || 4000
 const APP_URL = process.env.APP_URL || 'http://localhost:5173'
 const GMAIL_USER = process.env.GMAIL_USER
-const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+const GOOGLE_REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN
 const REQUIRED_DOMAIN = '@ed.nagoya-cu.ac.jp'
 const INVALID_DOMAIN_MESSAGE =
   '申し訳ございません。このアプリは名古屋市立大学発行のメールアドレスでなければログインできません。もう一度メールアドレスをお確かめになるか、別のアドレスを入力してください。'
 
-const transporter =
-  GMAIL_USER && GMAIL_APP_PASSWORD
-    ? nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        requireTLS: true,
-        auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 15000,
-      })
-    : null
+const gmailReady = Boolean(GMAIL_USER && GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && GOOGLE_REFRESH_TOKEN)
+
+const oauth2Client = gmailReady
+  ? new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, 'https://developers.google.com/oauthplayground')
+  : null
+if (oauth2Client) {
+  oauth2Client.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN })
+}
+const gmail = oauth2Client ? google.gmail({ version: 'v1', auth: oauth2Client }) : null
+
+function buildRawMessage({ to, subject, html }) {
+  const message = [
+    `From: NCU Loop <${GMAIL_USER}>`,
+    `To: ${to}`,
+    'Content-Type: text/html; charset=utf-8',
+    'MIME-Version: 1.0',
+    `Subject: ${subject}`,
+    '',
+    html,
+  ].join('\r\n')
+
+  return Buffer.from(message)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+}
 
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173')
   .split(',')
@@ -54,28 +70,32 @@ app.post('/api/signup', async (req, res) => {
   const continueUrl = `${APP_URL}/#/verify?token=${token}`
   console.log(`[dev] verification link for ${email}: ${continueUrl}`)
 
-  if (!transporter) {
-    console.error('GMAIL_USER / GMAIL_APP_PASSWORD is not set — cannot send email')
+  if (!gmail) {
+    console.error('Gmail API credentials are not set — cannot send email')
     return res.status(500).json({ ok: false, message: 'メール送信が設定されていません。サーバー管理者にお問い合わせください。' })
   }
 
   try {
-    await transporter.sendMail({
-      from: `NCU Loop <${GMAIL_USER}>`,
-      to: email,
-      subject: 'NCU Loop 登録の確認',
-      html: `
-        <div style="font-family: sans-serif; color: #16284a;">
-          <h2>NCU Loopへのご登録ありがとうございます</h2>
-          <p>以下のリンクをクリックして、登録を完了してください。</p>
-          <p>
-            <a href="${continueUrl}" style="display:inline-block; padding:12px 20px; background:#2f6fc4; color:#fff; border-radius:8px; text-decoration:none;">
-              登録を続ける
-            </a>
-          </p>
-          <p>このリンクに心当たりがない場合は、本メールを破棄してください。</p>
-        </div>
-      `,
+    await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: {
+        raw: buildRawMessage({
+          to: email,
+          subject: 'NCU Loop 登録の確認',
+          html: `
+            <div style="font-family: sans-serif; color: #16284a;">
+              <h2>NCU Loopへのご登録ありがとうございます</h2>
+              <p>以下のリンクをクリックして、登録を完了してください。</p>
+              <p>
+                <a href="${continueUrl}" style="display:inline-block; padding:12px 20px; background:#2f6fc4; color:#fff; border-radius:8px; text-decoration:none;">
+                  登録を続ける
+                </a>
+              </p>
+              <p>このリンクに心当たりがない場合は、本メールを破棄してください。</p>
+            </div>
+          `,
+        }),
+      },
     })
   } catch (err) {
     console.error('Failed to send signup email', err)
@@ -85,22 +105,9 @@ app.post('/api/signup', async (req, res) => {
   return res.status(200).json({ ok: true, message: '確認メールを送信しました。メールをご確認ください。' })
 })
 
-app.get('/api/debug-smtp', async (req, res) => {
-  if (!transporter) {
-    return res.json({ ok: false, reason: 'no-transporter' })
-  }
-  try {
-    await transporter.verify()
-    res.json({ ok: true })
-  } catch (err) {
-    res.json({ ok: false, code: err.code, message: err.message, command: err.command })
-  }
-})
-
 app.get('/api/health', (req, res) => {
   res.json({
-    hasGmailUser: Boolean(GMAIL_USER),
-    hasGmailAppPassword: Boolean(GMAIL_APP_PASSWORD),
+    gmailReady,
     commit: process.env.RENDER_GIT_COMMIT || null,
   })
 })

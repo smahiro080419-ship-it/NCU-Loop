@@ -9,7 +9,11 @@ services:
     envVars:
       - key: GMAIL_USER
         sync: false
-      - key: GMAIL_APP_PASSWORD
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REFRESH_TOKEN
         sync: false
       - key: APP_URL
         value: https://smahiro080419-ship-it.github.io/NCU-Loop
