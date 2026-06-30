@@ -123,7 +123,7 @@ function Market() {
             <p className="book-grid-label">出品中の教科書（{totalCount}件）</p>
             <div className="book-grid">
               {filteredUser.map((book) => (
-                <div key={book.id} className="book-card">
+                <div key={book.id} className="book-card" onClick={() => navigate('/book', { state: { book } })}>
                   {book.photoUrl
                     ? <img src={book.photoUrl} alt={book.title} className="book-card-photo" />
                     : <div className="book-card-cover">📖</div>
@@ -135,7 +135,7 @@ function Market() {
                 </div>
               ))}
               {filteredSample.map((book) => (
-                <div key={book.id} className="book-card">
+                <div key={book.id} className="book-card" onClick={() => navigate('/book', { state: { book } })}>
                   <div className="book-card-cover">📖</div>
                   <p className="book-card-title">{book.title}</p>
                   <p className="book-card-meta">{book.faculty} · {book.grade}</p>

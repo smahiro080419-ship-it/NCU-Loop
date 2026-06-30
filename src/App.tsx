@@ -6,6 +6,8 @@ import Verify from './pages/Verify'
 import Login from './pages/Login'
 import Market from './pages/Market'
 import Listing from './pages/Listing'
+import BookDetail from './pages/BookDetail'
+import Chat from './pages/Chat'
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/market" element={<Market />} />
       <Route path="/listing" element={<Listing />} />
+      <Route path="/book" element={<BookDetail />} />
+      <Route path="/chat" element={<Chat />} />
     </Routes>
   )
 }
