@@ -232,3 +232,44 @@
 .feature-icon {
   font-size: 18px;
 }
+
+.form-error {
+  color: #d8453a;
+  font-size: 13px;
+  text-align: left;
+  margin: 0;
+}
+
+.form-footer {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #666;
+}
+
+.form-footer a {
+  color: #2f6fc4;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.market-placeholder {
+  width: 100%;
+  background: #f4f6f8;
+  border-radius: 16px;
+  padding: 32px 16px;
+  margin: 8px 0 20px;
+  text-align: center;
+}
+
+.market-placeholder-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: #16284a;
+  margin: 0 0 8px;
+}
+
+.market-placeholder-sub {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}

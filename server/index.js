@@ -46,8 +46,9 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173')
   .split(',')
   .map((origin) => origin.trim())
 
-// In-memory store for dev/demo purposes — tokens are lost on server restart.
-const pendingSignups = new Map()
+// In-memory stores — data is lost on server restart (demo only).
+const pendingSignups = new Map() // token -> { email, passwordHash, createdAt }
+const users = new Map() // email -> { passwordHash }
 
 const app = express()
 app.use(cors({ origin: ALLOWED_ORIGINS }))
@@ -65,7 +66,8 @@ app.post('/api/signup', async (req, res) => {
   }
 
   const token = crypto.randomBytes(24).toString('hex')
-  pendingSignups.set(token, { email, createdAt: Date.now() })
+  const passwordHash = crypto.createHash('sha256').update(password).digest('hex')
+  pendingSignups.set(token, { email, passwordHash, createdAt: Date.now() })
 
   const continueUrl = `${APP_URL}/#/verify?token=${token}`
   console.log(`[dev] verification link for ${email}: ${continueUrl}`)
@@ -105,6 +107,27 @@ app.post('/api/signup', async (req, res) => {
   return res.status(200).json({ ok: true, message: '確認メールを送信しました。メールをご確認ください。', continueUrl })
 })
 
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body || {}
+
+  if (!email || !password) {
+    return res.status(400).json({ ok: false, message: 'メールアドレスとパスワードを入力してください。' })
+  }
+
+  const user = users.get(email)
+  if (!user) {
+    return res.status(401).json({ ok: false, message: 'メールアドレスまたはパスワードが違います。' })
+  }
+
+  const hash = crypto.createHash('sha256').update(password).digest('hex')
+  if (hash !== user.passwordHash) {
+    return res.status(401).json({ ok: false, message: 'メールアドレスまたはパスワードが違います。' })
+  }
+
+  const sessionToken = crypto.randomBytes(24).toString('hex')
+  return res.status(200).json({ ok: true, token: sessionToken, email })
+})
+
 app.get('/api/health', (req, res) => {
   res.json({
     gmailReady,
@@ -119,8 +142,9 @@ app.get('/api/verify', (req, res) => {
     return res.status(400).json({ ok: false, message: 'リンクが無効、または期限切れです。' })
   }
 
-  const { email } = pendingSignups.get(token)
+  const { email, passwordHash } = pendingSignups.get(token)
   pendingSignups.delete(token)
+  users.set(email, { passwordHash })
 
   return res.status(200).json({ ok: true, email })
 })

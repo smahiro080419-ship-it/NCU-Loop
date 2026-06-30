@@ -51,8 +51,8 @@ function Verify() {
             <h1 className="page-title">登録が完了しました</h1>
             <p className="description">{email} での登録が確認されました。ログインしてご利用ください。</p>
             <div className="actions">
-              <Link to="/" className="btn btn-primary">
-                ホームに戻る
+              <Link to="/login" className="btn btn-primary">
+                ログインする
               </Link>
             </div>
           </>

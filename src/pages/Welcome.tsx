@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { LogoMark, Wordmark } from '../components/Brand'
 
 function Welcome() {
+  const navigate = useNavigate()
   return (
     <div className="welcome">
       <main className="welcome-card">
@@ -19,7 +20,7 @@ function Welcome() {
         </p>
 
         <div className="actions">
-          <button type="button" className="btn btn-primary">
+          <button type="button" className="btn btn-primary" onClick={() => navigate('/login')}>
             学校用メールでログイン
           </button>
           <Link to="/signup" className="btn btn-secondary">
