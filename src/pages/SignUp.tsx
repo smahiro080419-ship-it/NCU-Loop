@@ -10,6 +10,7 @@ function SignUp() {
   const [password, setPassword] = useState('')
   const [screen, setScreen] = useState<Screen>('form')
   const [message, setMessage] = useState('')
+  const [continueUrl, setContinueUrl] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
@@ -23,6 +24,7 @@ function SignUp() {
       })
       const data = await res.json()
       setMessage(data.message)
+      if (res.ok && data.continueUrl) setContinueUrl(data.continueUrl)
       setScreen(res.ok ? 'sent' : 'error')
     } catch {
       setMessage('通信エラーが発生しました。しばらくしてから再度お試しください。')
@@ -97,9 +99,14 @@ function SignUp() {
             <div className="status-icon status-icon-success">✓</div>
             <h1 className="page-title">確認メールを送信しました</h1>
             <p className="description">
-              {email} 宛に確認メールを送信しました。メール内のリンクから登録を完了してください。
+              {email} 宛に確認メールを送信しました。メールが届かない場合は下のボタンから直接続けることもできます。
             </p>
             <div className="actions">
+              {continueUrl && (
+                <a href={continueUrl} className="btn btn-primary">
+                  登録を続ける
+                </a>
+              )}
               <Link to="/" className="btn btn-secondary">
                 ホームに戻る
               </Link>

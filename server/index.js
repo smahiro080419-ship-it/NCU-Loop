@@ -102,7 +102,7 @@ app.post('/api/signup', async (req, res) => {
     return res.status(502).json({ ok: false, message: 'メールの送信に失敗しました。しばらくしてから再度お試しください。' })
   }
 
-  return res.status(200).json({ ok: true, message: '確認メールを送信しました。メールをご確認ください。' })
+  return res.status(200).json({ ok: true, message: '確認メールを送信しました。メールをご確認ください。', continueUrl })
 })
 
 app.get('/api/health', (req, res) => {
