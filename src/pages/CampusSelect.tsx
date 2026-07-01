@@ -2,33 +2,35 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LogoMark } from '../components/Brand'
 
+const base = import.meta.env.BASE_URL
+
 const CAMPUSES = [
   {
     key: '桜山キャンパス',
     label: '桜山',
     en: 'Sakurayama',
-    img: '/images/sakurayama.png',
+    img: `${base}images/sakurayama.png`,
     fallback: 'linear-gradient(145deg,#6a3093,#a044ff)',
   },
   {
     key: '滝子キャンパス',
     label: '滝子',
     en: 'Takiko',
-    img: '/images/takiko.jpg',
+    img: `${base}images/takiko.jpg`,
     fallback: 'linear-gradient(145deg,#1a6dff,#00d2ff)',
   },
   {
     key: '田辺通キャンパス',
     label: '田辺通',
     en: 'Tanabedori',
-    img: '/images/tanabedori.jpg',
+    img: `${base}images/tanabedori.jpg`,
     fallback: 'linear-gradient(145deg,#11998e,#38ef7d)',
   },
   {
     key: '北千種キャンパス',
     label: '北千種',
     en: 'Kitachigusa',
-    img: '/images/kitachigusa.jpg',
+    img: `${base}images/kitachigusa.jpg`,
     fallback: 'linear-gradient(145deg,#f7971e,#ffd200)',
   },
 ]
