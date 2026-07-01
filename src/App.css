@@ -1029,49 +1029,39 @@
 .cs-layout {
   min-height: 100svh;
   width: 100%;
-  background: #fff;
+  background: #f4f6f8;
   display: flex;
   flex-direction: column;
 }
 
 .cs-header {
-  background: linear-gradient(160deg, #0f2027 0%, #203a43 55%, #2c5364 100%);
-  padding: 52px 24px 28px;
+  background: #fff;
+  padding: 48px 24px 24px;
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 1px 0 #eee;
 }
 
 .cs-header-logo {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  margin-top: 2px;
-  filter: brightness(0) invert(1);
-  opacity: 0.85;
-}
-
-.cs-header-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 4px;
 }
 
 .cs-header-greeting {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
-  letter-spacing: 0.06em;
-  margin: 0;
+  color: #888;
+  margin: 8px 0 2px;
 }
 
 .cs-header-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  color: #16284a;
   margin: 0;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
 }
 
 .cs-grid {

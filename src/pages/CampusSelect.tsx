@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LogoMark } from '../components/Brand'
+import { LogoMark, Wordmark } from '../components/Brand'
 
 const base = import.meta.env.BASE_URL
 
@@ -56,10 +56,9 @@ function CampusSelect() {
         <div className="cs-header-logo">
           <LogoMark />
         </div>
-        <div className="cs-header-text">
-          <p className="cs-header-greeting">こんにちは、{username} さん</p>
-          <h1 className="cs-header-title">キャンパスを選んでください</h1>
-        </div>
+        <Wordmark />
+        <p className="cs-header-greeting">こんにちは、{username} さん</p>
+        <p className="cs-header-title">キャンパスを選んでください</p>
       </header>
 
       <div className="cs-grid">
