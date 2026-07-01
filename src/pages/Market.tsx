@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { LogoMark } from '../components/Brand'
 import { getListings, type Listing } from '../lib/listings'
 
@@ -28,10 +28,12 @@ const SAMPLE_BOOKS = [
 function Market() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [profileOpen, setProfileOpen] = useState(false)
-  const [activeCampus, setActiveCampus] = useState('すべて')
   const [activeCategory, setActiveCategory] = useState('すべて')
   const [userListings, setUserListings] = useState<Listing[]>([])
   const navigate = useNavigate()
+  const location = useLocation()
+  const initialCampus = (location.state as { campus?: string } | null)?.campus ?? 'すべて'
+  const [activeCampus, setActiveCampus] = useState(initialCampus)
 
   useEffect(() => {
     const token = localStorage.getItem('ncu_token')

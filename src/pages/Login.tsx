@@ -30,7 +30,7 @@ function Login() {
           faculty: data.faculty,
           grade: data.grade,
         }))
-        navigate('/market')
+        navigate('/campus')
       } else {
         setError(data.message)
       }
