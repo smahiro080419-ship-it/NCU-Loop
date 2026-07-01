@@ -38,12 +38,16 @@ const CAMPUSES = [
 function CampusSelect() {
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem('ncu_token')
     if (!token) { navigate('/login'); return }
     const raw = localStorage.getItem('ncu_profile')
     if (raw) setUsername(JSON.parse(raw).username ?? '')
+    // slight delay so CSS transitions fire after first paint
+    const t = setTimeout(() => setMounted(true), 30)
+    return () => clearTimeout(t)
   }, [navigate])
 
   const handleSelect = (campusKey: string) => {
@@ -52,18 +56,35 @@ function CampusSelect() {
 
   return (
     <div className="cs-layout">
-      <header className="cs-header">
+      {/* ── background decoration ── */}
+      <div className="cs-bg-blob cs-blob-1" />
+      <div className="cs-bg-blob cs-blob-2" />
+
+      {/* ── header ── */}
+      <header className={`cs-header ${mounted ? 'cs-header--in' : ''}`}>
         <div className="cs-header-logo">
           <LogoMark />
         </div>
         <Wordmark />
-        <p className="cs-header-greeting">こんにちは、{username} さん</p>
-        <p className="cs-header-title">キャンパスを選んでください</p>
+        <div className="cs-header-divider" />
+        <p className="cs-header-greeting">
+          <span className="cs-greeting-hi">こんにちは、</span>
+          <span className="cs-greeting-name">{username}</span>
+          <span className="cs-greeting-hi"> さん</span>
+        </p>
+        <p className="cs-header-sub">どのキャンパスで注文しますか？</p>
       </header>
 
+      {/* ── campus cards ── */}
       <div className="cs-grid">
-        {CAMPUSES.map((c) => (
-          <CampusCard key={c.key} campus={c} onSelect={handleSelect} />
+        {CAMPUSES.map((c, i) => (
+          <CampusCard
+            key={c.key}
+            campus={c}
+            index={i}
+            mounted={mounted}
+            onSelect={handleSelect}
+          />
         ))}
       </div>
     </div>
@@ -72,11 +93,29 @@ function CampusSelect() {
 
 type Campus = typeof CAMPUSES[number]
 
-function CampusCard({ campus, onSelect }: { campus: Campus; onSelect: (key: string) => void }) {
+function CampusCard({
+  campus,
+  index,
+  mounted,
+  onSelect,
+}: {
+  campus: Campus
+  index: number
+  mounted: boolean
+  onSelect: (key: string) => void
+}) {
   const [imgFailed, setImgFailed] = useState(false)
+  const [pressed, setPressed] = useState(false)
 
   return (
-    <div className="cs-card" onClick={() => onSelect(campus.key)}>
+    <div
+      className={`cs-card ${mounted ? 'cs-card--in' : ''} ${pressed ? 'cs-card--pressed' : ''}`}
+      style={{ animationDelay: `${0.15 + index * 0.09}s`, transitionDelay: `${0.15 + index * 0.09}s` }}
+      onClick={() => onSelect(campus.key)}
+      onPointerDown={() => setPressed(true)}
+      onPointerUp={() => setPressed(false)}
+      onPointerLeave={() => setPressed(false)}
+    >
       {imgFailed ? (
         <div className="cs-card-fallback" style={{ background: campus.fallback }} />
       ) : (
@@ -87,11 +126,20 @@ function CampusCard({ campus, onSelect }: { campus: Campus; onSelect: (key: stri
           onError={() => setImgFailed(true)}
         />
       )}
+
+      {/* shimmer overlay on hover */}
+      <div className="cs-card-shimmer" />
       <div className="cs-card-overlay" />
+
       <div className="cs-card-body">
         <span className="cs-card-pill">CAMPUS</span>
         <p className="cs-card-name">{campus.label}</p>
         <p className="cs-card-en">{campus.en}</p>
+        <div className="cs-card-arrow">
+          <svg viewBox="0 0 20 20" fill="none">
+            <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
       </div>
     </div>
   )
