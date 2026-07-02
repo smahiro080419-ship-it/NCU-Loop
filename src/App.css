@@ -1521,66 +1521,6 @@
   pointer-events: none;
 }
 
-/* header */
-.wb-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 16px;
-  background: rgba(10,20,35,0.55);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.wb-back-btn {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; flex-shrink: 0;
-}
-
-.wb-back-btn svg { width: 20px; height: 20px; }
-
-.wb-header-center {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.wb-header-campus {
-  font-size: 10px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.5);
-  letter-spacing: 0.08em;
-  margin: 0;
-}
-
-.wb-header-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  line-height: 1.2;
-}
-
-/* shared tab bar tweaks for dark bg */
-.wb-layout .wb-tabs {
-  background: rgba(10,20,35,0.5);
-  backdrop-filter: blur(16px);
-  border-bottom-color: rgba(255,255,255,0.08);
-}
-
-.wb-layout .wb-tab { color: rgba(255,255,255,0.45); }
-.wb-layout .wb-tab-active { color: #fff; border-bottom-color: #4caf50; }
 
 /* main */
 .wb-main {

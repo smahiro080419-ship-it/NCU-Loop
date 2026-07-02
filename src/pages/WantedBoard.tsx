@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { LogoMark } from '../components/Brand'
 import { getWanted, addWanted, deleteWanted, type WantedPost } from '../lib/wanted'
 
 const base = import.meta.env.BASE_URL
@@ -79,18 +80,16 @@ export default function WantedBoard() {
       {imgUrl && <img src={imgUrl} className="wb-bg-img" alt="" aria-hidden />}
       <div className="wb-bg-overlay" />
 
-      {/* ── sticky header ── */}
-      <header className="wb-header">
-        <button className="wb-back-btn" onClick={() => navigate('/campus')}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
+      {/* ── sticky header (same as Market) ── */}
+      <header className="market-header">
+        <button className="market-back-btn" onClick={() => navigate('/campus')} aria-label="キャンパス選択に戻る">
+          ←
         </button>
-        <div className="wb-header-center">
-          <p className="wb-header-campus">{campus}</p>
-          <p className="wb-header-title">求む掲示板</p>
+        <div className="market-header-logo">
+          <LogoMark />
         </div>
-        <button className="user-icon-btn" onClick={() => navigate('/market', { state: { campus } })}>
+        <span className="market-header-title">{campus !== 'すべて' ? campus : 'NCU Loop'}</span>
+        <button className="user-icon-btn" onClick={() => navigate('/market', { state: { campus } })} aria-label="マーケットへ">
           {avatarUrl
             ? <img src={avatarUrl} alt="avatar" className="user-icon-avatar" />
             : <span className="user-icon-initials">{initials}</span>
