@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { LogoMark } from '../components/Brand'
 import ProfilePanel from '../components/ProfilePanel'
-import { getListings, isTrading, type Listing } from '../lib/listings'
+import { getListings, isTrading, isCompleted, type Listing } from '../lib/listings'
 
 type Profile = {
   email: string
@@ -53,12 +53,12 @@ function Market() {
   const initials = profile.username.slice(0, 2).toUpperCase()
 
   const filteredUser = userListings.filter((b) =>
-    campus === 'すべて' || b.campus === campus
+    (campus === 'すべて' || b.campus === campus) && !isCompleted(b.id)
   )
   const filteredSample = SAMPLE_BOOKS.filter((b) => {
     const campusMatch = campus === 'すべて' || b.campus === campus
     const categoryMatch = activeCategory === 'すべて' || b.faculty === activeCategory
-    return campusMatch && categoryMatch
+    return campusMatch && categoryMatch && !isCompleted(b.id)
   })
   const totalCount = filteredUser.length + filteredSample.length
 

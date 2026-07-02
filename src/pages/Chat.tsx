@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { getRoom, sendMessage, type ChatRoom } from '../lib/chats'
+import { QRCodeSVG } from 'qrcode.react'
+import { getRoom, sendMessage, sendQR, type ChatRoom } from '../lib/chats'
 import { clearTrading } from '../lib/listings'
 
 function Chat() {
@@ -42,6 +43,14 @@ function Chat() {
     }
   }
 
+  const handleIssueQR = () => {
+    if (!book?.id || !roomId) return
+    const base = import.meta.env.BASE_URL
+    const url = `${window.location.origin}${base}#/complete?listingId=${book.id}`
+    sendQR(roomId, myName, url)
+    setRoom(getRoom(roomId))
+  }
+
   const handleCancelTrading = () => {
     if (book?.id != null) clearTrading(book.id)
     setShowCancelConfirm(false)
@@ -49,6 +58,8 @@ function Chat() {
   }
 
   if (!room) return null
+
+  const isSeller = myName === room.seller
 
   return (
     <div className="chat-layout">
@@ -72,6 +83,20 @@ function Chat() {
       <main className="chat-messages">
         {room.messages.map((msg) => {
           const isMe = msg.sender === myName
+          if (msg.type === 'qr' && msg.data) {
+            return (
+              <div key={msg.id} className={`chat-bubble-wrap ${isMe ? 'chat-bubble-wrap-me' : ''}`}>
+                {!isMe && <span className="chat-sender">{msg.sender}</span>}
+                <div className={`chat-bubble chat-bubble-qr ${isMe ? 'chat-bubble-me' : 'chat-bubble-other'}`}>
+                  <p className="chat-qr-label">取引用QRコード</p>
+                  <div className="chat-qr-img">
+                    <QRCodeSVG value={msg.data} size={180} />
+                  </div>
+                  <p className="chat-qr-hint">購入者の方はこちらをスキャンしてください</p>
+                </div>
+              </div>
+            )
+          }
           return (
             <div key={msg.id} className={`chat-bubble-wrap ${isMe ? 'chat-bubble-wrap-me' : ''}`}>
               {!isMe && <span className="chat-sender">{msg.sender}</span>}
@@ -85,6 +110,15 @@ function Chat() {
       </main>
 
       <footer className="chat-footer">
+        {isSeller && (
+          <button className="chat-qr-btn" onClick={handleIssueQR} title="取引完了QRを発行">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+              <path d="M14 14h2v2h-2zM18 14h3M14 18h1M17 18h4M14 21h3M19 21h2"/>
+            </svg>
+          </button>
+        )}
         <textarea
           className="chat-input"
           value={text}

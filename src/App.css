@@ -994,6 +994,108 @@
   cursor: pointer;
 }
 
+/* ── Chat QR button & bubble ── */
+.chat-qr-btn {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  border: 1.5px solid #d8dee6;
+  background: #f3f4f6;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.chat-qr-btn:hover {
+  background: #e8f0fb;
+  border-color: #2f6fc4;
+}
+
+.chat-qr-btn svg {
+  width: 20px; height: 20px;
+  stroke: #374151;
+}
+
+.chat-bubble-qr {
+  background: #fff !important;
+  border: 1.5px solid #e5e7eb;
+  color: #111 !important;
+  padding: 16px !important;
+  align-items: center;
+  text-align: center;
+  max-width: 240px !important;
+}
+
+.chat-qr-label {
+  font-size: 12px; font-weight: 700;
+  color: #374151; margin: 0 0 12px;
+  letter-spacing: 0.04em;
+}
+
+.chat-qr-img {
+  background: #fff;
+  padding: 8px;
+  border-radius: 8px;
+  display: inline-block;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.chat-qr-hint {
+  font-size: 10px; color: #9ca3af;
+  margin: 10px 0 0; line-height: 1.5;
+}
+
+/* ── Transaction complete page ── */
+.complete-layout {
+  min-height: 100dvh;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(145deg, #f0f7ff, #e8f5e9);
+  padding: 24px;
+}
+
+.complete-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 28px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  max-width: 340px; width: 100%;
+  animation: scale-in 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.complete-icon-wrap {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  box-shadow: 0 4px 16px rgba(76,175,80,0.4);
+}
+
+.complete-check {
+  font-size: 36px; color: #fff; font-weight: 900;
+  line-height: 1;
+}
+
+.complete-title {
+  font-size: 20px; font-weight: 800;
+  color: #111827; margin: 0 0 12px;
+}
+
+.complete-text {
+  font-size: 14px; color: #6b7280;
+  line-height: 1.7; margin: 0 0 28px;
+}
+
+.complete-btn {
+  width: 100%;
+}
+
 /* ── Barcode: title row ── */
 .title-input-row {
   display: flex;

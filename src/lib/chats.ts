@@ -3,6 +3,8 @@ export type Message = {
   sender: string
   text: string
   createdAt: number
+  type?: 'text' | 'qr'
+  data?: string
 }
 
 export type ChatRoom = {
@@ -42,6 +44,14 @@ export function initRoom(roomId: string, bookTitle: string, seller: string, buye
 export function sendMessage(roomId: string, sender: string, text: string): Message {
   const room = getRoom(roomId)!
   const message: Message = { id: Date.now(), sender, text, createdAt: Date.now() }
+  room.messages.push(message)
+  localStorage.setItem(`ncu_chat_${roomId}`, JSON.stringify(room))
+  return message
+}
+
+export function sendQR(roomId: string, sender: string, url: string): Message {
+  const room = getRoom(roomId)!
+  const message: Message = { id: Date.now(), sender, text: '取引用QRコード', type: 'qr', data: url, createdAt: Date.now() }
   room.messages.push(message)
   localStorage.setItem(`ncu_chat_${roomId}`, JSON.stringify(room))
   return message

@@ -10,6 +10,7 @@ import WantedBoard from './pages/WantedBoard'
 import Listing from './pages/Listing'
 import BookDetail from './pages/BookDetail'
 import Chat from './pages/Chat'
+import Complete from './pages/Complete'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
       <Route path="/listing" element={<Listing />} />
       <Route path="/book" element={<BookDetail />} />
       <Route path="/chat" element={<Chat />} />
+      <Route path="/complete" element={<Complete />} />
     </Routes>
   )
 }

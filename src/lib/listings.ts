@@ -43,3 +43,24 @@ export function clearTrading(id: number): void {
   s.delete(id)
   localStorage.setItem('ncu_trading', JSON.stringify([...s]))
 }
+
+function getCompletedSet(): Set<number> {
+  const raw = localStorage.getItem('ncu_completed')
+  return raw ? new Set(JSON.parse(raw)) : new Set()
+}
+
+export function isCompleted(id: number): boolean {
+  return getCompletedSet().has(id)
+}
+
+export function completeListing(id: number): void {
+  // Remove from user listings
+  const listings = getListings().filter(l => l.id !== id)
+  localStorage.setItem('ncu_listings', JSON.stringify(listings))
+  // Clear trading status
+  clearTrading(id)
+  // Mark as completed (covers sample books too)
+  const s = getCompletedSet()
+  s.add(id)
+  localStorage.setItem('ncu_completed', JSON.stringify([...s]))
+}
