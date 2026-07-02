@@ -84,6 +84,11 @@ function Market() {
         </button>
       </header>
 
+      <div className="wb-tabs">
+        <button className="wb-tab wb-tab-active">📚 マーケット</button>
+        <button className="wb-tab" onClick={() => navigate('/wanted', { state: { campus } })}>📋 求む掲示板</button>
+      </div>
+
       <div className="category-scroll-wrap">
         <div className="category-scroll">
           {CATEGORIES.map((cat) => (

@@ -6,6 +6,7 @@ import Verify from './pages/Verify'
 import Login from './pages/Login'
 import CampusSelect from './pages/CampusSelect'
 import Market from './pages/Market'
+import WantedBoard from './pages/WantedBoard'
 import Listing from './pages/Listing'
 import BookDetail from './pages/BookDetail'
 import Chat from './pages/Chat'
@@ -19,6 +20,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/campus" element={<CampusSelect />} />
       <Route path="/market" element={<Market />} />
+      <Route path="/wanted" element={<WantedBoard />} />
       <Route path="/listing" element={<Listing />} />
       <Route path="/book" element={<BookDetail />} />
       <Route path="/chat" element={<Chat />} />
