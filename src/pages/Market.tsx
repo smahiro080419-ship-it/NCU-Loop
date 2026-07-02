@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { LogoMark } from '../components/Brand'
+import ProfilePanel from '../components/ProfilePanel'
 import { getListings, type Listing } from '../lib/listings'
 
 type Profile = {
@@ -29,6 +30,7 @@ function Market() {
   const [profileOpen, setProfileOpen] = useState(false)
   const [activeCategory, setActiveCategory] = useState('すべて')
   const [userListings, setUserListings] = useState<Listing[]>([])
+  const [avatarUrl, setAvatarUrl] = useState<string>(() => localStorage.getItem('ncu_avatar') ?? '')
   const navigate = useNavigate()
   const location = useLocation()
   const campus = (location.state as { campus?: string } | null)?.campus ?? 'すべて'
@@ -41,10 +43,9 @@ function Market() {
     setUserListings(getListings())
   }, [navigate])
 
-  const handleLogout = () => {
-    localStorage.removeItem('ncu_token')
-    localStorage.removeItem('ncu_profile')
-    navigate('/')
+  const handleProfileUpdate = (updated: Profile) => {
+    setProfile(updated)
+    setAvatarUrl(localStorage.getItem('ncu_avatar') ?? '')
   }
 
   if (!profile) return null
@@ -76,7 +77,10 @@ function Market() {
           onClick={() => setProfileOpen(true)}
           aria-label="プロフィールを開く"
         >
-          <span className="user-icon-initials">{initials}</span>
+          {avatarUrl
+            ? <img src={avatarUrl} alt="avatar" className="user-icon-avatar" />
+            : <span className="user-icon-initials">{initials}</span>
+          }
         </button>
       </header>
 
@@ -137,40 +141,11 @@ function Market() {
       </button>
 
       {profileOpen && (
-        <div className="profile-overlay" onClick={() => setProfileOpen(false)}>
-          <aside className="profile-panel" onClick={(e) => e.stopPropagation()}>
-            <button className="profile-close" onClick={() => setProfileOpen(false)}>✕</button>
-
-            <div className="profile-avatar">
-              <span className="profile-avatar-initials">{initials}</span>
-            </div>
-
-            <h2 className="profile-username">{profile.username}</h2>
-
-            <ul className="profile-list">
-              <li>
-                <span className="profile-label">メールアドレス</span>
-                <span className="profile-value">{profile.email}</span>
-              </li>
-              <li>
-                <span className="profile-label">学部</span>
-                <span className="profile-value">{profile.faculty}</span>
-              </li>
-              <li>
-                <span className="profile-label">学年</span>
-                <span className="profile-value">{profile.grade}</span>
-              </li>
-              <li>
-                <span className="profile-label">性別</span>
-                <span className="profile-value">{profile.gender}</span>
-              </li>
-            </ul>
-
-            <button className="btn btn-secondary profile-logout" onClick={handleLogout}>
-              ログアウト
-            </button>
-          </aside>
-        </div>
+        <ProfilePanel
+          profile={profile}
+          onClose={() => setProfileOpen(false)}
+          onProfileUpdate={handleProfileUpdate}
+        />
       )}
     </div>
   )
