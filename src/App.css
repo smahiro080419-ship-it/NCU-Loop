@@ -1045,6 +1045,29 @@
   margin: 10px 0 0; line-height: 1.5;
 }
 
+.chat-scan-start-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(135deg, #2f6fc4, #1a8fe0);
+  color: #fff;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.03em;
+}
+
+.complete-modal {
+  border-top: 4px solid #4caf50;
+}
+
+.complete-modal .complete-icon-wrap {
+  width: 64px; height: 64px;
+  margin: 0 auto 16px;
+}
+
 /* ── Transaction complete page ── */
 .complete-layout {
   min-height: 100dvh;
