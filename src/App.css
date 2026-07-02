@@ -903,6 +903,97 @@
   margin-top: 8px;
 }
 
+/* ── Trading status ── */
+.book-card-trading {
+  opacity: 0.72;
+}
+
+.book-card-trading-badge {
+  position: absolute;
+  top: 8px; left: 8px;
+  background: rgba(239, 68, 68, 0.92);
+  color: #fff;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+
+.book-card {
+  position: relative;
+}
+
+.detail-photo-wrap {
+  position: relative;
+}
+
+.detail-trading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 800; color: #fff;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+.detail-trading-badge {
+  margin-left: auto;
+  background: rgba(239,68,68,0.9);
+  color: #fff;
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.detail-buy-btn-trading {
+  background: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+  border: none;
+  border-radius: 12px;
+  width: 100%;
+  padding: 14px;
+  font-size: 16px; font-weight: 700;
+  margin-top: 16px;
+}
+
+.detail-chat-btn {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.chat-cancel-btn {
+  margin-left: auto;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(239,68,68,0.7);
+  background: rgba(239,68,68,0.08);
+  color: #dc2626;
+  font-size: 12px; font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.chat-cancel-btn:hover {
+  background: rgba(239,68,68,0.15);
+}
+
+.chat-cancel-confirm-btn {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  width: 100%;
+  padding: 14px;
+  font-size: 16px; font-weight: 700;
+  cursor: pointer;
+}
+
 /* ── Barcode: title row ── */
 .title-input-row {
   display: flex;

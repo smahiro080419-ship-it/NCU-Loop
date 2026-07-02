@@ -22,3 +22,24 @@ export function addListing(listing: Omit<Listing, 'id' | 'createdAt'>): Listing 
   localStorage.setItem('ncu_listings', JSON.stringify(listings))
   return newListing
 }
+
+function getTradingSet(): Set<number> {
+  const raw = localStorage.getItem('ncu_trading')
+  return raw ? new Set(JSON.parse(raw)) : new Set()
+}
+
+export function isTrading(id: number): boolean {
+  return getTradingSet().has(id)
+}
+
+export function setTrading(id: number): void {
+  const s = getTradingSet()
+  s.add(id)
+  localStorage.setItem('ncu_trading', JSON.stringify([...s]))
+}
+
+export function clearTrading(id: number): void {
+  const s = getTradingSet()
+  s.delete(id)
+  localStorage.setItem('ncu_trading', JSON.stringify([...s]))
+}

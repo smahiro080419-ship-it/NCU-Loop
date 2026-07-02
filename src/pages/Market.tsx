@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { LogoMark } from '../components/Brand'
 import ProfilePanel from '../components/ProfilePanel'
-import { getListings, type Listing } from '../lib/listings'
+import { getListings, isTrading, type Listing } from '../lib/listings'
 
 type Profile = {
   email: string
@@ -114,28 +114,36 @@ function Market() {
           <div className="book-grid-wrap">
             <p className="book-grid-label">出品中の教科書（{totalCount}件）</p>
             <div className="book-grid">
-              {filteredUser.map((book) => (
-                <div key={book.id} className="book-card" onClick={() => navigate('/book', { state: { book } })}>
-                  {book.photoUrl
-                    ? <img src={book.photoUrl} alt={book.title} className="book-card-photo" />
-                    : <div className="book-card-cover">📖</div>
-                  }
-                  <p className="book-card-title">{book.title}</p>
-                  <p className="book-card-meta">{book.condition} · {book.campus}</p>
-                  <p className="book-card-price">¥{book.price.toLocaleString()}</p>
-                  <p className="book-card-seller">{book.seller}</p>
-                </div>
-              ))}
-              {filteredSample.map((book) => (
-                <div key={book.id} className="book-card" onClick={() => navigate('/book', { state: { book } })}>
-                  <div className="book-card-cover">📖</div>
-                  <p className="book-card-title">{book.title}</p>
-                  <p className="book-card-meta">{book.faculty} · {book.grade}</p>
-                  <p className="book-card-campus">{book.campus}</p>
-                  <p className="book-card-price">¥{book.price.toLocaleString()}</p>
-                  <p className="book-card-seller">{book.seller}</p>
-                </div>
-              ))}
+              {filteredUser.map((book) => {
+                const trading = isTrading(book.id)
+                return (
+                  <div key={book.id} className={`book-card ${trading ? 'book-card-trading' : ''}`} onClick={() => navigate('/book', { state: { book } })}>
+                    {book.photoUrl
+                      ? <img src={book.photoUrl} alt={book.title} className="book-card-photo" />
+                      : <div className="book-card-cover">📖</div>
+                    }
+                    {trading && <span className="book-card-trading-badge">取引中</span>}
+                    <p className="book-card-title">{book.title}</p>
+                    <p className="book-card-meta">{book.condition} · {book.campus}</p>
+                    <p className="book-card-price">¥{book.price.toLocaleString()}</p>
+                    <p className="book-card-seller">{book.seller}</p>
+                  </div>
+                )
+              })}
+              {filteredSample.map((book) => {
+                const trading = isTrading(book.id)
+                return (
+                  <div key={book.id} className={`book-card ${trading ? 'book-card-trading' : ''}`} onClick={() => navigate('/book', { state: { book } })}>
+                    <div className="book-card-cover">📖</div>
+                    {trading && <span className="book-card-trading-badge">取引中</span>}
+                    <p className="book-card-title">{book.title}</p>
+                    <p className="book-card-meta">{book.faculty} · {book.grade}</p>
+                    <p className="book-card-campus">{book.campus}</p>
+                    <p className="book-card-price">¥{book.price.toLocaleString()}</p>
+                    <p className="book-card-seller">{book.seller}</p>
+                  </div>
+                )
+              })}
             </div>
           </div>
         )}

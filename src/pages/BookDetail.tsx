@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { initRoom } from '../lib/chats'
+import { isTrading, setTrading } from '../lib/listings'
 
 type Book = {
   id: number
@@ -20,6 +21,7 @@ function BookDetail() {
   const location = useLocation()
   const book = location.state?.book as Book | undefined
   const [showNotice, setShowNotice] = useState(false)
+  const [trading, setTradingState] = useState(() => book ? isTrading(book.id) : false)
 
   if (!book) {
     navigate('/market')
@@ -34,6 +36,8 @@ function BookDetail() {
 
   const handleBuy = () => {
     initRoom(roomId, book.title, book.seller, buyer)
+    setTrading(book.id)
+    setTradingState(true)
     setShowNotice(true)
   }
 
@@ -44,10 +48,13 @@ function BookDetail() {
   return (
     <div className="market-layout">
       <header className="market-header">
-        <button className="market-back-btn" onClick={() => navigate('/market')} aria-label="戻る">
+        <button className="market-back-btn" onClick={() => navigate(-1)} aria-label="戻る">
           ←
         </button>
         <span className="market-header-title">商品詳細</span>
+        {trading && (
+          <span className="detail-trading-badge">取引中</span>
+        )}
       </header>
 
       <main className="detail-main">
@@ -56,6 +63,7 @@ function BookDetail() {
             ? <img src={book.photoUrl} alt={book.title} className="detail-photo" />
             : <div className="detail-photo-placeholder">📖</div>
           }
+          {trading && <div className="detail-trading-overlay">取引中</div>}
         </div>
 
         <div className="detail-body">
@@ -83,9 +91,21 @@ function BookDetail() {
             </div>
           )}
 
-          <button className="btn btn-primary detail-buy-btn" onClick={handleBuy}>
-            購入する
-          </button>
+          {trading ? (
+            <button className="btn detail-buy-btn detail-buy-btn-trading" disabled>
+              取引中
+            </button>
+          ) : (
+            <button className="btn btn-primary detail-buy-btn" onClick={handleBuy}>
+              購入する
+            </button>
+          )}
+
+          {trading && (
+            <button className="btn btn-secondary detail-chat-btn" onClick={handleOpenChat}>
+              チャットを開く
+            </button>
+          )}
         </div>
       </main>
 

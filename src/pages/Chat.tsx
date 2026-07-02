@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { getRoom, sendMessage, type ChatRoom } from '../lib/chats'
+import { clearTrading } from '../lib/listings'
 
 function Chat() {
   const navigate = useNavigate()
@@ -10,6 +11,7 @@ function Chat() {
 
   const [room, setRoom] = useState<ChatRoom | null>(null)
   const [text, setText] = useState('')
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   const raw = localStorage.getItem('ncu_profile')
@@ -40,6 +42,12 @@ function Chat() {
     }
   }
 
+  const handleCancelTrading = () => {
+    if (book?.id != null) clearTrading(book.id)
+    setShowCancelConfirm(false)
+    navigate('/book', { state: { book } })
+  }
+
   if (!room) return null
 
   return (
@@ -52,6 +60,13 @@ function Chat() {
           <span className="market-header-title">{room.seller}</span>
           <span className="chat-header-sub">{room.bookTitle}</span>
         </div>
+        <button
+          className="chat-cancel-btn"
+          onClick={() => setShowCancelConfirm(true)}
+          aria-label="取引を中止する"
+        >
+          取引中止
+        </button>
       </header>
 
       <main className="chat-messages">
@@ -87,6 +102,22 @@ function Chat() {
           ▶
         </button>
       </footer>
+
+      {showCancelConfirm && (
+        <div className="notice-overlay" onClick={() => setShowCancelConfirm(false)}>
+          <div className="notice-card" onClick={(e) => e.stopPropagation()}>
+            <div className="notice-icon">⚠️</div>
+            <h2 className="notice-title">取引を中止しますか？</h2>
+            <p className="notice-text">商品は再び「購入可能」に戻ります</p>
+            <button className="btn chat-cancel-confirm-btn" onClick={handleCancelTrading}>
+              取引を中止する
+            </button>
+            <button className="btn btn-secondary notice-close" onClick={() => setShowCancelConfirm(false)}>
+              キャンセル
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
