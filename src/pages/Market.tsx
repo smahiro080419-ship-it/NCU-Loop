@@ -11,18 +11,17 @@ type Profile = {
   grade: string
 }
 
-const CAMPUSES = ['すべて', '桜山キャンパス', '滝子キャンパス', '田辺通キャンパス', '北千種キャンパス']
 const CATEGORIES = ['すべて', '医学部', '経済学部', '総合生命理学部', '芸術工学部', '人文社会学部', 'データサイエンス学部']
 
 const SAMPLE_BOOKS = [
-  { id: 1, title: '解剖学テキスト', faculty: '医学部', grade: '2年', price: 1200, seller: 'K.T', campus: '桜山キャンパス' },
-  { id: 2, title: 'ミクロ経済学入門', faculty: '経済学部', grade: '1年', price: 800, seller: 'A.M', campus: '滝子キャンパス' },
-  { id: 3, title: '細胞生物学', faculty: '総合生命理学部', grade: '2年', price: 1500, seller: 'S.H', campus: '北千種キャンパス' },
-  { id: 4, title: 'デザイン史概論', faculty: '芸術工学部', grade: '1年', price: 600, seller: 'R.Y', campus: '田辺通キャンパス' },
-  { id: 5, title: '社会学入門', faculty: '人文社会学部', grade: '1年', price: 700, seller: 'N.K', campus: '田辺通キャンパス' },
+  { id: 1, title: '解剖学テキスト',      faculty: '医学部',           grade: '2年', price: 1200, seller: 'K.T', campus: '桜山キャンパス' },
+  { id: 2, title: 'ミクロ経済学入門',    faculty: '経済学部',         grade: '1年', price: 800,  seller: 'A.M', campus: '滝子キャンパス' },
+  { id: 3, title: '細胞生物学',          faculty: '総合生命理学部',   grade: '2年', price: 1500, seller: 'S.H', campus: '北千種キャンパス' },
+  { id: 4, title: 'デザイン史概論',      faculty: '芸術工学部',       grade: '1年', price: 600,  seller: 'R.Y', campus: '田辺通キャンパス' },
+  { id: 5, title: '社会学入門',          faculty: '人文社会学部',     grade: '1年', price: 700,  seller: 'N.K', campus: '田辺通キャンパス' },
   { id: 6, title: 'Pythonで学ぶ統計学', faculty: 'データサイエンス学部', grade: '1年', price: 1100, seller: 'T.S', campus: '北千種キャンパス' },
-  { id: 7, title: '内科学テキスト', faculty: '医学部', grade: '3年', price: 2000, seller: 'Y.O', campus: '桜山キャンパス' },
-  { id: 8, title: 'マクロ経済学', faculty: '経済学部', grade: '2年', price: 900, seller: 'M.I', campus: '滝子キャンパス' },
+  { id: 7, title: '内科学テキスト',      faculty: '医学部',           grade: '3年', price: 2000, seller: 'Y.O', campus: '桜山キャンパス' },
+  { id: 8, title: 'マクロ経済学',        faculty: '経済学部',         grade: '2年', price: 900,  seller: 'M.I', campus: '滝子キャンパス' },
 ]
 
 function Market() {
@@ -32,15 +31,11 @@ function Market() {
   const [userListings, setUserListings] = useState<Listing[]>([])
   const navigate = useNavigate()
   const location = useLocation()
-  const initialCampus = (location.state as { campus?: string } | null)?.campus ?? 'すべて'
-  const [activeCampus, setActiveCampus] = useState(initialCampus)
+  const campus = (location.state as { campus?: string } | null)?.campus ?? 'すべて'
 
   useEffect(() => {
     const token = localStorage.getItem('ncu_token')
-    if (!token) {
-      navigate('/login')
-      return
-    }
+    if (!token) { navigate('/login'); return }
     const raw = localStorage.getItem('ncu_profile')
     if (raw) setProfile(JSON.parse(raw))
     setUserListings(getListings())
@@ -57,10 +52,10 @@ function Market() {
   const initials = profile.username.slice(0, 2).toUpperCase()
 
   const filteredUser = userListings.filter((b) =>
-    activeCampus === 'すべて' || b.campus === activeCampus
+    campus === 'すべて' || b.campus === campus
   )
   const filteredSample = SAMPLE_BOOKS.filter((b) => {
-    const campusMatch = activeCampus === 'すべて' || b.campus === activeCampus
+    const campusMatch = campus === 'すべて' || b.campus === campus
     const categoryMatch = activeCategory === 'すべて' || b.faculty === activeCategory
     return campusMatch && categoryMatch
   })
@@ -69,13 +64,13 @@ function Market() {
   return (
     <div className="market-layout">
       <header className="market-header">
-        <button className="market-back-btn" onClick={() => navigate('/')} aria-label="ホームに戻る">
+        <button className="market-back-btn" onClick={() => navigate('/campus')} aria-label="キャンパス選択に戻る">
           ←
         </button>
         <div className="market-header-logo">
           <LogoMark />
         </div>
-        <span className="market-header-title">NCU Loop</span>
+        <span className="market-header-title">{campus !== 'すべて' ? campus : 'NCU Loop'}</span>
         <button
           className="user-icon-btn"
           onClick={() => setProfileOpen(true)}
@@ -84,20 +79,6 @@ function Market() {
           <span className="user-icon-initials">{initials}</span>
         </button>
       </header>
-
-      <div className="campus-scroll-wrap">
-        <div className="campus-scroll">
-          {CAMPUSES.map((campus) => (
-            <button
-              key={campus}
-              className={`campus-chip ${activeCampus === campus ? 'campus-chip-active' : ''}`}
-              onClick={() => setActiveCampus(campus)}
-            >
-              {campus}
-            </button>
-          ))}
-        </div>
-      </div>
 
       <div className="category-scroll-wrap">
         <div className="category-scroll">
