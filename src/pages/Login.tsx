@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { GoogleLogin, type CredentialResponse } from '@react-oauth/google'
 import { LogoMark } from '../components/Brand'
 import { API_BASE } from '../lib/api'
 
@@ -9,6 +10,37 @@ function Login() {
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
+
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse.credential) return
+    setSubmitting(true)
+    setError('')
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: credentialResponse.credential }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        localStorage.setItem('ncu_token', data.token)
+        localStorage.setItem('ncu_profile', JSON.stringify({
+          email: data.email,
+          username: data.username,
+          gender: data.gender,
+          faculty: data.faculty,
+          grade: data.grade,
+        }))
+        navigate('/campus')
+      } else {
+        setError(data.message)
+      }
+    } catch {
+      setError('通信エラーが発生しました。')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -49,7 +81,24 @@ function Login() {
         </div>
 
         <h1 className="page-title">ログイン</h1>
-        <p className="description">名古屋市立大学発行のメールアドレスでログインしてください。</p>
+        <p className="description">名古屋市立大学の学校用メールアドレスでログインしてください。</p>
+
+        {/* Google Sign-In */}
+        <div className="google-login-wrap">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Googleログインに失敗しました。')}
+            text="signin_with"
+            shape="rectangular"
+            theme="outline"
+            size="large"
+            width="320"
+          />
+        </div>
+
+        <div className="login-divider">
+          <span>または</span>
+        </div>
 
         <form className="signup-form" onSubmit={handleSubmit}>
           <label className="field">
@@ -77,17 +126,13 @@ function Login() {
 
           <div className="actions">
             <button type="submit" className="btn btn-primary" disabled={submitting}>
-              {submitting ? 'ログイン中...' : 'ログイン'}
+              {submitting ? 'ログイン中...' : 'メールでログイン'}
             </button>
             <Link to="/" className="btn btn-secondary">
               戻る
             </Link>
           </div>
         </form>
-
-        <p className="form-footer">
-          アカウントをお持ちでない方は <Link to="/signup">新規登録</Link>
-        </p>
       </main>
     </div>
   )
