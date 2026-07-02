@@ -48,7 +48,7 @@ function BookDetail() {
   return (
     <div className="market-layout">
       <header className="market-header">
-        <button className="market-back-btn" onClick={() => navigate(-1)} aria-label="戻る">
+        <button className="market-back-btn" onClick={() => navigate('/market', { state: { campus: book.campus } })} aria-label="戻る">
           ←
         </button>
         <span className="market-header-title">商品詳細</span>
