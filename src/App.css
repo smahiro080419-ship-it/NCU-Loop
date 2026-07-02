@@ -1,5 +1,32 @@
+/* ════════════════════════════
+   Mobile global reset
+════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+
+body {
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* prevent iOS input zoom — any input < 16px would trigger zoom */
+input, select, textarea {
+  font-size: 16px;
+}
+
+/* ════════════════════════════
+   Welcome / Auth pages
+════════════════════════════ */
 .welcome {
-  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   display: flex;
   align-items: center;
@@ -14,7 +41,7 @@
   max-width: 420px;
   background: #ffffff;
   border-radius: 24px;
-  padding: 40px 32px;
+  padding: 36px 24px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.1);
   text-align: center;
   display: flex;
@@ -296,7 +323,7 @@
 }
 
 .market-layout {
-  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   background: #f4f6f8;
   display: flex;
@@ -306,7 +333,8 @@
 .market-header {
   background: linear-gradient(90deg, #4caf50 0%, #2f6fc4 100%);
   padding: 0 16px;
-  height: 56px;
+  padding-top: env(safe-area-inset-top, 0px);
+  height: calc(56px + env(safe-area-inset-top, 0px));
   display: flex;
   align-items: center;
   gap: 10px;
@@ -561,8 +589,8 @@
 }
 
 .profile-panel {
-  width: 280px;
-  height: 100vh;
+  width: min(300px, 85vw);
+  height: 100dvh;
   background: #fff;
   padding: 24px 20px;
   display: flex;
@@ -788,7 +816,7 @@
 /* FAB */
 .fab {
   position: fixed;
-  bottom: 24px;
+  bottom: max(24px, calc(env(safe-area-inset-bottom, 0px) + 16px));
   right: 24px;
   width: 56px;
   height: 56px;
@@ -1188,6 +1216,7 @@
   border-radius: 24px 24px 0 0;
   overflow: hidden;
   animation: sheet-up 0.3s cubic-bezier(0.22,1,0.36,1);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .scan-modal-header {
@@ -1461,10 +1490,11 @@
 
 /* Chat */
 .chat-layout {
-  min-height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background: #f4f6f8;
+  overflow: hidden;
 }
 
 .chat-header-info {
@@ -1487,6 +1517,7 @@
   flex-direction: column;
   gap: 12px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .chat-bubble-wrap {
@@ -1533,9 +1564,11 @@
   background: #fff;
   border-top: 1px solid #eee;
   padding: 10px 12px;
+  padding-bottom: max(10px, calc(env(safe-area-inset-bottom, 0px) + 8px));
   display: flex;
   align-items: flex-end;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .chat-input {
@@ -1595,7 +1628,7 @@
 
 /* ── layout ── */
 .cs-layout {
-  min-height: 100svh;
+  min-height: 100dvh;
   width: 100%;
   background: #f0f2f5;
   display: flex;
@@ -1633,7 +1666,7 @@
   background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding: 52px 24px 22px;
+  padding: max(52px, calc(env(safe-area-inset-top, 0px) + 20px)) 24px 22px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1847,7 +1880,7 @@
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(0,0,0,0.08);
   position: sticky;
-  top: 56px;
+  top: calc(56px + env(safe-area-inset-top, 0px));
   z-index: 9;
 }
 
@@ -1879,7 +1912,7 @@
 }
 
 .wb-layout {
-  min-height: 100svh;
+  min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
   background: #0f1923;
@@ -1916,7 +1949,7 @@
 .wb-main {
   position: relative;
   z-index: 1;
-  padding: 16px 16px 120px;
+  padding: 16px 16px max(120px, calc(env(safe-area-inset-bottom, 0px) + 100px));
 }
 
 /* empty state */
@@ -2013,7 +2046,8 @@
 /* FAB */
 .wb-fab {
   position: fixed;
-  bottom: 28px; right: 20px;
+  bottom: max(28px, calc(env(safe-area-inset-bottom, 0px) + 16px));
+  right: 20px;
   display: flex; align-items: center; gap: 8px;
   background: linear-gradient(135deg, #4caf50, #2f6fc4);
   color: #fff; border: none;
@@ -2041,9 +2075,9 @@
   margin: 0 auto;
   background: #fff;
   border-radius: 24px 24px 0 0;
-  padding: 12px 20px 40px;
+  padding: 12px 20px max(40px, calc(env(safe-area-inset-bottom, 0px) + 24px));
   display: flex; flex-direction: column; gap: 14px;
-  max-height: 85svh; overflow-y: auto;
+  max-height: 85dvh; overflow-y: auto;
   animation: sheet-up 0.3s cubic-bezier(0.22,1,0.36,1);
 }
 
@@ -2108,3 +2142,59 @@
   margin-top: 4px;
 }
 .wb-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ════════════════════════════
+   Mobile-specific overrides
+════════════════════════════ */
+@media (max-width: 480px) {
+  /* welcome card — tighter on small screens */
+  .welcome-card {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  /* campus select cards — slightly shorter */
+  .cs-card {
+    height: 180px;
+  }
+
+  .cs-card-name {
+    font-size: 18px;
+  }
+
+  /* market grid — 2 columns with less gap */
+  .book-grid {
+    gap: 10px;
+  }
+
+  /* listing main — remove side padding overhead */
+  .listing-main {
+    padding: 16px 12px max(40px, calc(env(safe-area-inset-bottom, 0px) + 24px));
+  }
+
+  /* detail body padding */
+  .detail-body {
+    padding: 16px 14px;
+  }
+
+  /* chat: ensure footer always visible above keyboard */
+  .chat-layout {
+    height: 100dvh;
+  }
+
+  /* notice card — full width on tiny screens */
+  .notice-card {
+    padding: 28px 20px;
+  }
+
+  /* market main bottom padding for FAB */
+  .market-main {
+    padding-bottom: max(80px, calc(env(safe-area-inset-bottom, 0px) + 70px));
+  }
+
+  /* tab text */
+  .wb-tab {
+    font-size: 12px;
+    padding: 10px 0;
+  }
+}
