@@ -21,3 +21,9 @@ services:
         value: https://smahiro080419-ship-it.github.io
       - key: GOOGLE_SIGNIN_CLIENT_ID
         value: 20229136857-aaga250je2huolgu99tdhj5qaid0pjgv.apps.googleusercontent.com
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_FROM
+        sync: false
